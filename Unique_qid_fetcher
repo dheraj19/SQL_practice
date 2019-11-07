@@ -1,0 +1,25 @@
+/*
+--Prints the current detections on that IP
+select * from hostdetection where ip='10.255.174.251' and type='Confirmed' and severity in (3,4,5)
+
+--Prints the number of times qid found on those IP's in the last 14 Days
+
+*/
+declare @scanref_list table
+(
+    scan_refs varchar(1000)
+)
+/*
+    Place your all scan_ref here as it will combine the results of all the scan_ref present here .
+    insert into @scanref_list values ('Place your scan_ref HERE')
+*/
+insert into @scanref_list values ('HERE0')
+INSERT into @scanref_list VALUES ('HERE1')
+INSERT into @scanref_list VALUES ('HERE2')
+INSERT into @scanref_list VALUES ('HERE3')
+
+select * from scandetection where scan_ref in  (select scan_refs from @scanref_list) and ip ='10.65.194.224'
+
+select count(distinct(qid)) As Medium from scandetection where scan_ref in  (select scan_refs from @scanref_list) and type = 'Vuln' and severity = 3  and last_vm_scandate >=(select dateadd(day,-14,(select getdate())))
+select count(distinct(qid)) As High from  scandetection where scan_ref in  (select scan_refs from @scanref_list) and type = 'Vuln' and severity = 4 and last_vm_scandate >=(select dateadd(day,-14,(select getdate())))
+select count(distinct(qid)) As Ciritcal from scandetection where scan_ref in  (select scan_refs from @scanref_list) and type = 'Vuln' and severity = 5 and last_vm_scandate >=(select dateadd(day,-14,(select getdate())))
